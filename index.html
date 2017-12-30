@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+
+
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+     <script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+
+
+<script>
+	var socket = io();
+	socket.on('sockets123',function(data){
+     document.getElementById("p1").innerHTML = data.sockets123;	
+});
+  $(function () {
+   
+    $('form').submit(function(){
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+    socket.on('chat message', function(msg){
+      $('#messages').append($('<li>').text(msg));
+    });})
+    function nameChange() {
+    var person = prompt("Please enter your name:", "");
+    if (person == null || person == "") {
+       console.log('enter somthing valid');
+    } else {
+       socket.emit('namechange',{key: person})
+      socket.id=person;
+      document.getElementById("p1").innerHTML = socket.id;	
+    }
+}
+function showCurrentUsers(){
+socket.emit('currentlyConnected',{});
+
+}
+  function chatroomConnect(){
+  	 var chatroomName = prompt("Please enter desired chatroom! ", "");
+     socket.emit('chatroom',{chatr00m:chatroomName});
+
+}
+  
+</script>
+  <body>
+  	<button onclick="nameChange();">Change Name</button>
+  	<button onclick="showCurrentUsers();">Show Current Users</button>
+  	<button onclick="chatroomConnect();">Connect to chatroom</button>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+      <p id="p1">Hello World!</p>
+  </body>
+</html>
